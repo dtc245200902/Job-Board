@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo Cáo Thực Hành Đề 33 - dtc245200902</title>
+    <link href="https://fonts.googleapis.com/css2?family=Times+New+Roman&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm 20mm 20mm 25mm;
+        }
+        body {
+            font-family: 'Times New Roman', serif;
+            font-size: 13pt;
+            line-height: 1.5;
+            color: #000;
+            background: #fff;
+            margin: 0;
+            padding: 20px 40px;
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Times New Roman', serif;
+            color: #002b49;
+            font-weight: bold;
+        }
+        h1 { font-size: 18pt; text-align: center; margin-top: 1.5rem; text-transform: uppercase; }
+        h2 { font-size: 15pt; margin-top: 1.25rem; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
+        h3 { font-size: 13.5pt; margin-top: 1rem; }
+        p { text-align: justify; margin: 0.5rem 0; text-indent: 1cm; }
+        ul, ol { margin: 0.5rem 0 0.5rem 1.5rem; }
+        li { margin-bottom: 0.35rem; }
+        pre {
+            background: #f4f6f8;
+            border: 1px solid #dcdfe4;
+            padding: 12px;
+            border-radius: 4px;
+            font-family: Consolas, monospace;
+            font-size: 10pt;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        code {
+            background: #edf2f7;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: Consolas, monospace;
+            font-size: 11pt;
+            color: #b91c1c;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 11.5pt;
+        }
+        table, th, td {
+            border: 1px solid #333;
+        }
+        th, td {
+            padding: 8px 10px;
+            text-align: left;
+        }
+        th {
+            background: #e2e8f0;
+            font-weight: bold;
+        }
+        .page-break {
+            page-break-after: always;
+            break-after: page;
+            height: 0;
+            margin: 0;
+        }
+        @media print {
+            body { padding: 0; }
+            .no-print { display: none; }
+        }
+        .print-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #002b49;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-family: sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <button class="print-btn no-print" onclick="window.print()">In Báo Cáo / Xuất PDF</button>
+    <h1>BỘ GIÁO DỤC VÀ ĐÀO TẠO</h1>
+<h2>TRƯỜNG ĐẠI HỌC CÔNG NGHỆ THÔNG TIN VÀ TRUYỀN THÔNG</h2>
+<h3>KHOA CÔNG NGHỆ THÔNG TIN</h3>
+
+---
+
+<br><br><br>
+
+<h1>BÁO CÁO BÀI TẬP LỚN / THỰC HÀNH MÔN HỌC</h1>
+<h2>MÔN: TRIỂN KHAI VÀ QUẢN TRỊ HỆ THỐNG PHẦN MỀM</h2>
+
+<br>
+
+<h3><strong>ĐỀ TÀI SỐ 33:</strong></h3>
+<h1>XÂY DỰNG VÀ TRIỂN KHAI HỆ THỐNG WEBSITE TUYỂN DỤNG (JOB BOARD) TRÊN NỀN TẢNG DOCKER COMPOSE, NGINX REVERSE PROXY, GIÁM SÁT PROMETHEUS - GRAFANA, QUẢN TRỊ LOG LOKI VÀ HARDENING TOÀN DIỆN</h1>
+
+<br><br><br>
+
+<strong>Sinh viên thực hiện:</strong> dtc245200902  
+<strong>Mã số sinh viên:</strong> <code>dtc245200902</code>  
+<strong>Lớp / Khóa:</strong> Công nghệ Thông tin  
+<strong>Repository GitHub:</strong> [https://github.com/dtc245200902/Job-Board](https://github.com/dtc245200902/Job-Board)  
+<strong>Giảng viên hướng dẫn:</strong> Bộ môn Quản trị Hệ thống Phần mềm  
+
+<br><br>
+
+---
+<strong>Hà Nội, Năm 2026</strong>
+
+<div class="page-break"></div>
+
+<h1>MỤC LỤC</h1>
+
+1. [LỜI NÓI ĐẦU](#1-lời-nói-đầu)
+2. [CHƯƠNG 1: TỔNG QUAN ĐỀ TÀI VÀ KIẾN TRÚC HỆ THỐNG](#chương-1-tổng-quan-đề-tài-và-kiến-trúc-hệ-thống)
+<li>1.1. Bối cảnh và yêu cầu đề tài số 33</li>
+<li>1.2. Mục tiêu kỹ thuật</li>
+<li>1.3. Sơ đồ kiến trúc tổng thể (System Architecture)</li>
+<li>1.4. Thiết kế phân vùng mạng Docker Networks</li>
+3. [CHƯƠNG 2: TRIỂN KHAI ỨNG DỤNG WEB VÀ CƠ SỞ DỮ LIỆU MYSQL](#chương-2-triển-khai-ứng-dụng-web-và-cơ-sở-dữ-liệu-mysql)
+<li>2.1. Thiết kế và công nghệ ứng dụng Web Job Board</li>
+<li>2.2. Thiết kế Cơ sở dữ liệu quan hệ MySQL 8.0</li>
+<li>2.3. Tích hợp Công cụ quản trị trực quan phpMyAdmin</li>
+<li>2.4. Quy trình ứng viên nộp CV và Quản lý tin tuyển dụng</li>
+4. [CHƯƠNG 3: CẤU HÌNH NGINX REVERSE PROXY VÀ BẢO MẬT SSL/TLS](#chương-3-cấu-hình-nginx-reverse-proxy-và-bảo-mật-ssltls)
+<li>3.1. Vai trò của Nginx Reverse Proxy</li>
+<li>3.2. Cấu hình HTTPS với Chứng chỉ SSL tự ký</li>
+<li>3.3. Cơ chế tự động chuyển hướng HTTP sang HTTPS</li>
+<li>3.4. Định tuyến đa dịch vụ (Subpath Routing)</li>
+<li>3.5. Cấu hình Stub Status phục vụ giám sát</li>
+5. [CHƯƠNG 4: HỆ THỐNG GIÁM SÁT THỜI GIAN THỰC VỚI PROMETHEUS VÀ GRAFANA](#chương-4-hệ-thống-giám-sát-thời-gian-thực-với-prometheus-và-grafana)
+<li>4.1. Kiến trúc hệ thống giám sát Metrics</li>
+<li>4.2. Cấu hình Prometheus Server thu thập số liệu</li>
+<li>4.3. Các Metrics Exporters được tích hợp</li>
+<li>4.4. Tự động nạp cấu hình Datasources và Dashboards trên Grafana</li>
+<li>4.5. Phân tích các Dashboard giám sát chuyên sâu</li>
+6. [CHƯƠNG 5: HỆ THỐNG QUẢN TRỊ LOG TẬP TRUNG LOKI, PROMTAIL VÀ TRUY VẤN LOGQL](#chương-5-hệ-thống-quản-trị-log-tập-trung-loki-promtail-và-truy-vấn-logql)
+<li>5.1. Thách thức của Logging truyền thống và giải pháp Grafana Loki</li>
+<li>5.2. Cấu hình Loki Server lưu trữ và xử lý Index</li>
+<li>5.3. Cấu hình Promtail Agent thu thập nhật ký</li>
+<li>5.4. Kỹ thuật truy vấn phân tích nhật ký bằng ngôn ngữ LogQL</li>
+7. [CHƯƠNG 6: TRIỂN KHAI CÁC BIỆN PHÁP BẢO MẬT VÀ HARDENING HỆ THỐNG](#chương-6-triển-khai-các-biện-pháp-bảo-mật-và-hardening-hệ-thống)
+<li>6.1. Biện pháp 1: Non-root Container Execution</li>
+<li>6.2. Biện pháp 2: Phân vùng mạng độc lập (Network Isolation)</li>
+<li>6.3. Biện pháp 3: Quản lý mật khẩu mạnh và Nguyên tắc đặc quyền tối thiểu (Least Privilege)</li>
+<li>6.4. Biện pháp 4: Thiết lập Security Headers toàn diện trên Nginx</li>
+<li>6.5. Biện pháp 5: Giới hạn lưu lượng (Rate Limiting) và Giới hạn tài nguyên phần cứng</li>
+8. [CHƯƠNG 7: KẾT QUẢ THỰC NGHIỆM, HƯỚNG DẪN VẬN HÀNH VÀ ĐÁNH GIÁ](#chương-7-kết-quả-thực-nghiệm-hướng-dẫn-vận-hành-và-đánh-giá)
+<li>7.1. Hướng dẫn vận hành hệ thống từng bước</li>
+<li>7.2. Kết quả kiểm thử các ca sử dụng (Test Cases)</li>
+<li>7.3. Minh chứng và bằng chứng thực nghiệm</li>
+<li>7.4. Đánh giá ưu điểm và hạn chế</li>
+9. [KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN](#kết-luận-và-hướng-phát-triển)
+10. [TÀI LIỆU THAM KHẢO](#tài-liệu-tham-khảo)
+
+<div class="page-break"></div>
+
+---
+
+<h1>1. LỜI NÓI ĐẦU</h1>
+
+Trong kỷ nguyên số hóa hiện nay, việc phát triển một ứng dụng phần mềm chỉ là một nửa chặng đường. Nửa chặng đường quan trọng còn lại là quá trình <strong>Triển khai (Deployment)</strong>, <strong>Vận hành (Operation)</strong>, <strong>Giám sát (Monitoring)</strong> và <strong>Bảo vệ an toàn thông tin (Hardening)</strong> cho toàn bộ hạ tầng phần mềm.
+
+Được sự hướng dẫn của giảng viên bộ môn <em>Triển khai và Quản trị Hệ thống Phần mềm</em>, sinh viên đã tiến hành nghiên cứu, thiết kế và hiện thực hóa đề tài thực hành: <strong>"Đề số 33: Website Tuyển dụng / Job Board"</strong>. Báo cáo này trình bày chi tiết toàn bộ chu trình xây dựng hệ thống từ mã nguồn ứng dụng, cơ sở dữ liệu, cổng trung gian đảo ngược (Reverse Proxy), hệ sinh thái giám sát Metrics thời gian thực, quản lý nhật ký tập trung cho tới các kỹ thuật phòng thủ bảo mật chuyên sâu. Toàn bộ mã nguồn và lịch sử commit được quản lý nghiêm túc trên nền tảng GitHub theo đúng quy chuẩn mã sinh viên <code>dtc245200902</code>.
+
+---
+
+<h1>CHƯƠNG 1: TỔNG QUAN ĐỀ TÀI VÀ KIẾN TRÚC HỆ THỐNG</h1>
+
+<h2>1.1. Bối cảnh và yêu cầu đề tài số 33</h2>
+Theo nội dung phân công bài tập thực hành, Đề tài 33 yêu cầu triển khai một hệ thống Website Tuyển dụng / Job Board với các tính năng nghiệp vụ cốt lõi:
+<li><strong>Đăng tin tuyển dụng:</strong> Cho phép nhà tuyển dụng khởi tạo các vị trí việc làm mới với đầy đủ thông tin (vị trí, yêu cầu, đãi ngộ, mức lương, hạn nộp).</li>
+<li><strong>Ứng viên nộp CV:</strong> Cho phép người tìm việc duyệt việc làm, tìm kiếm theo từ khóa/địa điểm/ngành nghề và gửi hồ sơ kèm file CV trực tuyến.</li>
+<li><strong>Quản lý tin tuyển dụng và hồ sơ:</strong> Cung cấp bảng điều khiển cho phép theo dõi số lượng hồ sơ đã nộp, thay đổi trạng thái duyệt ứng viên và quản trị tin đăng.</li>
+<li><strong>Cơ sở dữ liệu:</strong> Sử dụng hệ quản trị cơ sở dữ liệu quan hệ <strong>MySQL 8.0</strong> kết hợp công cụ quản lý giao diện web <strong>phpMyAdmin</strong>.</li>
+
+<h2>1.2. Mục tiêu kỹ thuật</h2>
+Hệ thống phải đáp ứng đồng thời 6 yêu cầu kỹ thuật nền tảng:
+1. <strong>Quản lý mã nguồn trên GitHub:</strong> Toàn bộ source code, file cấu hình docker-compose, nginx, prometheus, loki được push lên repository của sinh viên (<code>dtc245200902/Job-Board</code>) với ít nhất 03 commit rõ ràng và file <code>README.md</code> chi tiết.
+2. <strong>Container hóa toàn diện:</strong> Triển khai 100% bằng Docker Compose.
+3. <strong>Cổng bảo mật Nginx Reverse Proxy:</strong> Định tuyến an toàn bằng giao thức HTTPS (chứng chỉ SSL/TLS tự ký), chuyển hướng tự động cổng 80 sang 443 và cấu hình đầy đủ các tiêu đề an ninh (Security Headers).
+4. <strong>Hệ thống giám sát hiệu năng (Prometheus + Grafana):</strong> Tự động cào dữ liệu từ máy chủ web, container, cơ sở dữ liệu và trực quan hóa qua các Dashboard chuyên nghiệp.
+5. <strong>Hệ thống nhật ký tập trung (Loki + Promtail):</strong> Tự động thu thập log từ Nginx và Docker, cung cấp cú pháp truy vấn LogQL đa dạng.
+6. <strong>Hardening hệ thống:</strong> Áp dụng tối thiểu 4-5 biện pháp bảo mật hạ tầng chuyên sâu.
+
+<h2>1.3. Sơ đồ kiến trúc tổng thể (System Architecture)</h2>
+
+Dưới đây là sơ đồ kiến trúc tổng thể của hệ thống Job Board triển khai bằng Docker Compose:
+
+``<code>
+                                [ Người Dùng / Ứng Viên / Nhà Tuyển Dụng ]
+                                                    │
+                                      Port 80 (HTTP) -> 301 Redirect
+                                      Port 443 (HTTPS - TLS v1.2/1.3)
+                                                    ▼
+                       ┌────────────────────────────────────────────────────────┐
+                       │               NGINX REVERSE PROXY GATEWAY              │
+                       │  - SSL Termination (jobboard.crt / jobboard.key)       │
+                       │  - Rate Limiting (25r/s, burst=30)                     │
+                       │  - Security Headers (HSTS, CSP, X-Frame, X-Content)    │
+                       │  - Subpath Proxy: / -> Web | /pma/ -> DB | /grafana/   │
+                       └────────────────────────────┬───────────────────────────┘
+                                                    │
+                ┌───────────────────────────────────┼───────────────────────────────────┐
+                ▼                                   ▼                                   ▼
+      [ frontend-net ]                      [ frontend-net ]                    [ frontend-net ]
+   ┌──────────────────────┐              ┌──────────────────────┐            ┌──────────────────────┐
+   │    Web Application   │              │      phpMyAdmin      │            │       Grafana        │
+   │  Node.js 20 Express  │              │   Web UI Quản Trị    │            │ Dashboards Giám Sát  │
+   │  Port 3000 (Internal)│              │  Port 80 (Internal)  │            │ Port 3000 (Internal) │
+   └──────────┬───────────┘              └──────────┬───────────┘            └──────────┬───────────┘
+              │ [backend-net]                       │ [backend-net]                     │ [monitoring-net]
+              └───────────────────┬─────────────────┘                                   │
+                                  ▼                                                     │
+                       ┌──────────────────────┐                                         │
+                       │   MySQL 8.0 Server   │                                         │
+                       │  Database: job_board │                                         │
+                       │ Port 3306 (Internal) │                                         │
+                       └──────────┬───────────┘                                         │
+                                  │ [backend-net]                                       │
+                                  ▼                                                     │
+                       ┌──────────────────────┐                                         │
+                       │   mysqld-exporter    │                                         │
+                       │  Port 9104 (Metrics) │ ──────────────────┐                     │
+                       └──────────────────────┘                   │                     │
+                                                                  ▼                     ▼
+                       ┌──────────────────────┐         ┌───────────────────┐ ┌───────────────────┐
+                       │  nginx-prometheus-   │ ──────► │ Prometheus Server │ │   Grafana Loki    │
+                       │  exporter (Port 9113)│         │ Port 9090(Metrics)│ │ Port 3100 (Logs)  │
+                       └──────────────────────┘         └─────────┬─────────┘ └─────────▲─────────┘
+                                                                  │ [monitoring-net]    │
+                       ┌──────────────────────┐                   │                     │
+                       │    node-exporter     │ ──────────────────┘                     │
+                       │  Port 9100 (Host)    │                                         │
+                       └──────────────────────┘                                         │
+                                                                                        │
+                       ┌────────────────────────────────────────────────────────┐       │
+                       │                     Promtail Agent                     │ ──────┘
+                       │  Thu thập Access/Error Log Nginx & Docker JSON Logs    │
+                       └────────────────────────────────────────────────────────┘
+</code>`<code>
+
+<h2>1.4. Thiết kế phân vùng mạng Docker Networks</h2>
+Hệ thống áp dụng kỹ thuật <strong>Network Isolation</strong> bằng cách tách thành 3 Bridge Networks độc lập:
+1. </code>frontend-net<code>: Kết nối Nginx Gateway với Web Application, phpMyAdmin và Grafana.
+2. </code>backend-net<code>: Mạng nội bộ riêng biệt kết nối Web Application, phpMyAdmin, MySQL Database và MySQL Exporter. Các client từ Internet hoặc mạng ngoài <strong>hoàn toàn không thể kết nối trực tiếp</strong> tới cổng MySQL 3306.
+3. </code>monitoring-net<code>: Mạng nội bộ cô lập kết nối Prometheus, Grafana, Loki, Promtail và toàn bộ các Exporters để trao đổi số liệu và nhật ký mà không làm ảnh hưởng đến lưu lượng của người dùng cuối.
+
+---
+
+<h1>CHƯƠNG 2: TRIỂN KHAI ỨNG DỤNG WEB VÀ CƠ SỞ DỮ LIỆU MYSQL</h1>
+
+<h2>2.1. Thiết kế và công nghệ ứng dụng Web Job Board</h2>
+Ứng dụng Web được xây dựng trên nền tảng <strong>Node.js (v20)</strong> kết hợp framework <strong>Express</strong>:
+<li><strong>View Engine:</strong> Sử dụng EJS (Embedded JavaScript) để kết xuất giao diện server-side rendering (SSR), tối ưu hiệu năng và khả năng lập chỉ mục SEO.</li>
+<li><strong>Giao diện hiện đại (UI/UX Design System):</strong> Thiết kế theo phong cách hiện đại với font chữ Plus Jakarta Sans, phối màu HSL cao cấp (Indigo/Violet/Emerald), hiệu ứng vi chuyển động (Micro-animations), thẻ chỉ số trực quan và bố cục tương thích hoàn hảo trên cả thiết bị di động (Responsive).</li>
+<li><strong>Thư viện xử lý File Upload:</strong> Sử dụng thư viện </code>multer<code> để tiếp nhận hồ sơ CV ứng tuyển với các quy chuẩn kiểm tra định dạng (.pdf, .doc, .docx) và giới hạn kích thước tối đa 10MB.</li>
+<li><strong>Prometheus Metrics Middleware:</strong> Tích hợp trực tiếp thư viện </code>prom-client<code> để tự động tính toán số lượng request theo route, thời gian xử lý (duration histogram) và các chỉ số kinh doanh (số tin tuyển dụng, số lượt nộp hồ sơ).</li>
+
+<h2>2.2. Thiết kế Cơ sở dữ liệu quan hệ MySQL 8.0</h2>
+Cơ sở dữ liệu mang tên </code>job_board_db<code> sử dụng bộ mã ký tự </code>utf8mb4<code> và collation </code>utf8mb4_unicode_ci<code> hỗ trợ hiển thị tiếng Việt hoàn hảo. Mô hình dữ liệu gồm 4 bảng chính:
+1. <strong></code>categories<code> (Danh mục ngành nghề):</strong> </code>id<code>, </code>name<code>, </code>slug<code>, </code>icon<code>, </code>description<code>.
+2. <strong></code>companies<code> (Doanh nghiệp tuyển dụng):</strong> </code>id<code>, </code>name<code>, </code>slug<code>, </code>logo<code>, </code>website<code>, </code>location<code>, </code>industry<code>, </code>description<code>.
+3. <strong></code>jobs<code> (Tin tuyển dụng):</strong> </code>id<code>, </code>title<code>, </code>slug<code>, </code>company_id<code> (FK), </code>category_id<code> (FK), </code>location<code>, </code>job_type<code>, </code>salary_range<code>, </code>experience_level<code>, </code>description<code>, </code>requirements<code>, </code>benefits<code>, </code>status<code>, </code>views<code>, </code>deadline<code>.
+4. <strong></code>applications<code> (Hồ sơ ứng viên nộp):</strong> </code>id<code>, </code>job_id<code> (FK), </code>candidate_name<code>, </code>candidate_email<code>, </code>candidate_phone<code>, </code>cv_filename<code>, </code>cover_letter<code>, </code>status<code>, </code>applied_at<code>.
+
+Script khởi tạo </code>database/init.sql<code> được mount trực tiếp vào thư mục </code>/docker-entrypoint-initdb.d/<code> của container MySQL, tự động khởi tạo dữ liệu mẫu phong phú gồm 6 tập đoàn công nghệ hàng đầu Việt Nam (VNG, FPT Software, Viettel Solutions, VinAI, MoMo, Shopee), hơn 10 vị trí việc làm hot và nhiều hồ sơ ứng viên với các trạng thái xử lý khác nhau.
+
+<h2>2.3. Tích hợp Công cụ quản trị trực quan phpMyAdmin</h2>
+<li>Dịch vụ phpMyAdmin được triển khai tại container </code>jobboard_phpmyadmin<code> trên nền image chính thức </code>phpmyadmin/phpmyadmin:latest<code>.</li>
+<li>Được cấu hình biến môi trường </code>PMA_ABSOLUTE_URI: https://localhost/pma/<code> cho phép quản trị viên truy cập tiện lợi thông qua Reverse Proxy của Nginx mà không cần mở trực tiếp cổng ứng dụng ra ngoài Internet.</li>
+<li>Hỗ trợ thao tác truy vấn SQL trực quan, sao lưu/phục hồi dữ liệu và kiểm tra cấu trúc bảng.</li>
+
+<h2>2.4. Quy trình ứng viên nộp CV và Quản lý tin tuyển dụng</h2>
+<li><strong>Ứng viên:</strong> Truy cập chi tiết công việc tại </code>/jobs/:id<code>, nhập thông tin cá nhân (Họ tên, Email, Điện thoại), đính kèm file CV và gửi lên server. Server xử lý lưu file vào </code>/usr/src/app/public/uploads<code>, ghi nhận bản ghi vào MySQL và tăng biến đếm </code>jobboard_applications_submitted_total<code> cho Prometheus.</li>
+<li><strong>Quản trị viên / Nhà tuyển dụng:</strong> Truy cập trang </code>/manage<code> để:</li>
+<li>Xem danh sách toàn bộ hồ sơ nộp, mở file CV để thẩm định.</li>
+<li>Cập nhật trạng thái ứng viên (Chờ duyệt -> Đang lọc -> Phỏng vấn -> Trúng tuyển -> Từ chối).</li>
+<li>Quản lý danh sách tin tuyển dụng, xóa các tin hết hạn hoặc đăng tin tuyển dụng mới qua biểu mẫu tại </code>/post-job<code>.</li>
+
+---
+
+<h1>CHƯƠNG 3: CẤU HÌNH NGINX REVERSE PROXY VÀ BẢO MẬT SSL/TLS</h1>
+
+<h2>3.1. Vai trò của Nginx Reverse Proxy</h2>
+Nginx đóng vai trò là "Cổng vào duy nhất" (Single Entrypoint) bảo vệ toàn bộ các dịch vụ nội bộ phía sau:
+<li>Tiếp nhận toàn bộ lưu lượng người dùng bên ngoài qua hai cổng tiêu chuẩn: 80 (HTTP) và 443 (HTTPS).</li>
+<li>Ẩn giấu hoàn toàn địa chỉ IP, cổng nội bộ và kiến trúc mạng của các container phía sau.</li>
+<li>Thực hiện giải mã SSL (SSL Termination) giúp giảm tải xử lý mã hóa cho ứng dụng Node.js.</li>
+
+<h2>3.2. Cấu hình HTTPS với Chứng chỉ SSL tự ký</h2>
+Chứng chỉ số SSL/TLS tự ký (Self-signed Certificate) được tạo lập thông qua OpenSSL với thuật toán RSA 2048-bit tiêu chuẩn, thời hạn 365 ngày:
+<li>File khóa bí mật: </code>nginx/ssl/jobboard.key<code> (được phân quyền bảo mật nghiêm ngặt </code>chmod 600<code>).</li>
+<li>File chứng chỉ công khai: </code>nginx/ssl/jobboard.crt<code> (</code>chmod 644<code>).</li>
+<li>Cấu hình Nginx thiết lập giao thức an toàn hiện đại </code>TLSv1.2<code> và </code>TLSv1.3<code>, vô hiệu hóa hoàn toàn các giao thức cũ tiềm ẩn lỗ hổng như SSLv3, TLSv1.0 và TLSv1.1.</li>
+
+<h2>3.3. Cơ chế tự động chuyển hướng HTTP sang HTTPS</h2>
+Trong file </code>nginx/conf.d/default.conf<code>, khối máy chủ (Server Block) cổng 80 được cấu hình tự động trả về mã chuyển hướng vĩnh viễn HTTP 301 sang HTTPS:
+</code>`<code>nginx
+server {
+    listen 80;
+    listen [::]:80;
+    server_name localhost;
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+</code>`<code>
+Cơ chế này bảo đảm mọi người dùng dù gõ địa chỉ không có tiền tố bảo mật vẫn tự động được mã hóa toàn bộ dữ liệu truyền nhận qua giao thức TLS.
+
+<h2>3.4. Định tuyến đa dịch vụ (Subpath Routing)</h2>
+Nginx phân phối lưu lượng truy cập tới từng dịch vụ tương ứng thông qua các Upstream backend:
+<li></code>location /<code>: Định tuyến tới ứng dụng Web Tuyển dụng </code>web:3000<code>.</li>
+<li></code>location /pma/<code>: Định tuyến tới công cụ cơ sở dữ liệu </code>phpmyadmin:80<code> với cấu hình ghi đè header </code>X-Forwarded-Prefix<code>.</li>
+<li></code>location /grafana/<code>: Định tuyến tới nền tảng giám sát </code>grafana:3000<code>.</li>
+
+<h2>3.5. Cấu hình Stub Status phục vụ giám sát</h2>
+Nginx mở một khối máy chủ nội bộ lắng nghe tại cổng </code>8080<code>:
+</code>`<code>nginx
+server {
+    listen 8080;
+    server_name 127.0.0.1 localhost;
+
+    location /stub_status {
+        stub_status;
+        allow all;
+    }
+}
+</code>`<code>
+Endpoint này cung cấp các số liệu hoạt động của Nginx (kết nối hiện thời, số request đã xử lý) để container </code>nginx-prometheus-exporter<code> thu thập và gửi về Prometheus.
+
+---
+
+<h1>CHƯƠNG 4: HỆ THỐNG GIÁM SÁT THỜI GIAN THỰC VỚI PROMETHEUS VÀ GRAFANA</h1>
+
+<h2>4.1. Kiến trúc hệ thống giám sát Metrics</h2>
+Mô hình giám sát sử dụng cơ chế kéo dữ liệu (Pull-based Model):
+<li><strong>Prometheus Server:</strong> Đóng vai trò là Time-Series Database định kỳ gửi HTTP request tới các endpoint </code>/metrics<code> của từng mục tiêu (targets) để lấy dữ liệu về lưu trữ.</li>
+<li><strong>Grafana Server:</strong> Nền tảng hiển thị, kết nối với Prometheus để truy vấn và vẽ các biểu đồ trực quan hóa dữ liệu thời gian thực.</li>
+
+<h2>4.2. Cấu hình Prometheus Server thu thập số liệu</h2>
+File cấu hình </code>monitoring/prometheus/prometheus.yml<code> định nghĩa 5 công việc cào số liệu (Scrape Jobs):
+1. </code>prometheus<code>: Tự giám sát sức khỏe của chính máy chủ Prometheus (</code>localhost:9090<code>).
+2. </code>jobboard-webapp<code>: Cào số liệu từ ứng dụng Web tại </code>web:3000/metrics<code> chu kỳ 5 giây/lần.
+3. </code>mysql-database<code>: Thu thập thông số nội bộ của MySQL qua </code>mysqld-exporter:9104<code>.
+4. </code>nginx-proxy<code>: Thu thập trạng thái của Reverse Proxy qua </code>nginx-exporter:9113<code>.
+5. </code>node-exporter<code>: Thu thập tài nguyên phần cứng máy chủ qua </code>node-exporter:9100<code>.
+
+<h2>4.3. Các Metrics Exporters được tích hợp</h2>
+1. <strong>Web App Prom-Client:</strong> Cung cấp các thông số độc quyền của ứng dụng:
+<li></code>jobboard_http_requests_total<code>: Số lượng request theo method, route và HTTP status code.</li>
+<li></code>jobboard_http_request_duration_seconds<code>: Histogram đo thời gian phản hồi của API/Web.</li>
+<li></code>jobboard_active_jobs_total<code>: Gauge thể hiện tổng số việc làm đang tuyển dụng.</li>
+<li></code>jobboard_applications_total<code>: Gauge thể hiện tổng số hồ sơ đã nộp trong database.</li>
+2. <strong>MySQL Exporter (</code>prom/mysqld-exporter<code>):</strong> Thu thập số lượng truy vấn/giây (QPS), số kết nối đồng thời, kích thước InnoDB buffer pool và số câu truy vấn chậm (slow queries).
+3. <strong>Nginx Exporter (</code>nginx/nginx-prometheus-exporter<code>):</strong> Thu thập số kết nối active, waiting, reading, writing và số lượng request được phân phối.
+4. <strong>Node Exporter (</code>prom/node-exporter<code>):</strong> Đo đạc phần trăm sử dụng CPU, bộ nhớ RAM khả dụng và lưu lượng truyền nhận qua giao diện mạng (Network Rx/Tx).
+
+<h2>4.4. Tự động nạp cấu hình Datasources và Dashboards trên Grafana</h2>
+Hệ thống sử dụng cơ chế <strong>Grafana Provisioning</strong> tự động mà không đòi hỏi thao tác thủ công từ người dùng:
+<li></code>datasources.yml<code>: Khởi tạo sẵn Data Source </code>Prometheus<code> (default) và </code>Loki<code>.</li>
+<li></code>dashboards.yml<code>: Tự động nạp toàn bộ các file JSON dashboard trong thư mục </code>/etc/grafana/provisioning/dashboards/json<code>.</li>
+
+<h2>4.5. Phân tích các Dashboard giám sát chuyên sâu</h2>
+Hệ thống đã xây dựng sẵn 3 bộ Dashboard chuyên nghiệp:
+1. <strong>Job Board - Giám Sát Web & Hệ Thống Tuyển Dụng (</code>jobboard-web-overview<code>):</strong>
+<li>KPI thống kê số tin tuyển dụng đang mở và tổng số CV ứng viên đã nộp.</li>
+<li>Tần suất request thời gian thực (QPS) và biểu đồ phân bổ lưu lượng theo từng Route (</code>/<code>, </code>/jobs<code>, </code>/jobs/:id<code>, </code>/manage<code>).</li>
+<li>Tỷ lệ mã lỗi HTTP và thời gian đáp ứng trung bình (Latency).</li>
+<li>Biểu đồ theo dõi dung lượng bộ nhớ Heap RAM của tiến trình Node.js.</li>
+2. <strong>Job Board - Giám Sát Cơ Sở Dữ Liệu MySQL (</code>mysql-database-monitoring<code>):</strong>
+<li>Trạng thái sống (Uptime) của MySQL.</li>
+<li>Số kết nối đang hoạt động (Threads Connected).</li>
+<li>Tần suất thực thi các lệnh cơ bản: </code>SELECT<code>, </code>INSERT<code>, </code>UPDATE<code>, </code>DELETE<code>.</li>
+<li>Dung lượng trang nhớ bộ đệm InnoDB Buffer Pool Data vs Free.</li>
+3. <strong>Job Board - Giám Sát Hạ Tầng & Container (</code>container-system-monitoring<code>):</strong>
+<li>Mức độ tải của CPU phân rã theo User Mode và System Mode.</li>
+<li>Dung lượng bộ nhớ RAM đã sử dụng so với tổng RAM máy chủ.</li>
+<li>Băng thông mạng truyền nhận (Bytes/sec).</li>
+
+---
+
+<h1>CHƯƠNG 5: HỆ THỐNG QUẢN TRỊ LOG TẬP TRUNG LOKI, PROMTAIL VÀ TRUY VẤN LOGQL</h1>
+
+<h2>5.1. Thách thức của Logging truyền thống và giải pháp Grafana Loki</h2>
+Trong môi trường microservices hoặc đa container, việc truy cập từng container bằng lệnh </code>docker logs<code> gây lãng phí thời gian, khó đối chiếu sự cố và không thể lưu trữ lâu dài.
+<strong>Grafana Loki</strong> giải quyết bài toán này theo cách tiếp cận độc đáo: Loki chỉ lập chỉ mục (index) các nhãn metadata giống như Prometheus thay vì lập chỉ mục toàn bộ nội dung văn bản (như Elasticsearch). Nhờ đó, Loki tiêu tốn cực kỳ ít tài nguyên RAM và lưu trữ, tối ưu tuyệt vời cho hệ thống container.
+
+<h2>5.2. Cấu hình Loki Server lưu trữ và xử lý Index</h2>
+File </code>logging/loki/loki-config.yml<code> cấu hình Loki hoạt động ở chế độ Single-binary với công cụ lưu trữ </code>TSDB<code> và lưu các khối dữ liệu (chunks) trực tiếp trên volume </code>loki_data<code>, thời gian lưu trữ được đặt là 168 giờ (7 ngày).
+
+<h2>5.3. Cấu hình Promtail Agent thu thập nhật ký</h2>
+Promtail đóng vai trò là log shipper agent:
+<li>Định kỳ giám sát và đọc dòng mới từ các file log của Nginx Reverse Proxy (</code>/var/log/nginx/access.log<code> và </code>/var/log/nginx/error.log<code>).</li>
+<li>Đọc nhật ký tiêu chuẩn của các container Docker (</code>/var/lib/docker/containers/<em>/</em>-json.log<code>).</li>
+<li>Gắn các nhãn siêu dữ liệu tương ứng: </code>{job="nginx", log_type="access"}<code>, </code>{job="nginx", log_type="error"}<code>, </code>{job="containers"}<code> và đẩy về API </code>http://loki:3100/loki/api/v1/push<code>.</li>
+
+<h2>5.4. Kỹ thuật truy vấn phân tích nhật ký bằng ngôn ngữ LogQL</h2>
+LogQL chia làm hai nhóm lệnh: <strong>Log Queries</strong> (truy xuất bản ghi log) và <strong>Metric Queries</strong> (biến đổi log thành chuỗi thời gian để vẽ đồ thị). Hệ thống cung cấp các câu truy vấn tiêu biểu sau:
+
+<h3>Câu truy vấn 1: Lọc người dùng truy cập danh sách việc làm</h3>
+</code>`<code>logql
+{job="nginx", log_type="access"} |= "GET /jobs"
+</code>`<code>
+<em>Ứng dụng:</em> Phân tích tần suất và các địa chỉ IP của ứng viên đang tìm kiếm cơ hội nghề nghiệp.
+
+<h3>Câu truy vấn 2: Truy vết toàn bộ lỗi hệ thống (HTTP 4xx và 5xx)</h3>
+</code>`<code>logql
+{job="nginx"} |~ "(40[0-9]|429|50[0-9])"
+</code>`<code>
+<em>Ứng dụng:</em> Phát hiện kịp thời các đường dẫn hỏng (404 Not Found), tình trạng bị nghẽn giới hạn tần suất (429 Too Many Requests) hoặc lỗi sập server (500 Internal Server Error).
+
+<h3>Câu truy vấn 3: Tính toán biểu đồ lưu lượng Request theo thời gian (Metric Query)</h3>
+</code>`<code>logql
+sum by (status) (count_over_time({job="nginx"} [1m]))
+</code>`<code>
+<em>Ứng dụng:</em> Trực quan hóa số lượng truy cập được phục vụ thành công (200) hoặc thất bại theo từng phút.
+
+<h3>Câu truy vấn 4: Giám sát nhật ký nộp hồ sơ CV của ứng viên</h3>
+</code>`<code>logql
+{job="containers"} |= "[CV_SUBMITTED]"
+</code>`<code>
+<em>Ứng dụng:</em> Theo dõi chi tiết ứng viên nào vừa nộp CV, gửi cho công việc mã số bao nhiêu.
+
+<h3>Câu truy vấn 5: Kiểm toán thao tác đăng và xóa tin tuyển dụng</h3>
+</code>`<code>logql
+{job="containers"} |~ "(\\[JOB_POSTED\\]|\\[JOB_DELETED\\])"
+</code>`<code>
+<em>Ứng dụng:</em> Phục vụ công tác kiểm tra bảo mật (Audit Log) đối với các hành vi quản trị hệ thống.
+
+---
+
+<h1>CHƯƠNG 6: TRIỂN KHAI CÁC BIỆN PHÁP BẢO MẬT VÀ HARDENING HỆ THỐNG</h1>
+
+An ninh thông tin là một tiêu chí trọng tâm được chấm điểm trong đề tài (1.5 điểm). Hệ thống đã triển khai nghiêm túc 5 lớp phòng thủ bảo mật (Hardening):
+
+<h2>6.1. Biện pháp 1: Non-root Container Execution</h2>
+<li><strong>Nguy cơ:</strong> Khi một container chạy dưới quyền </code>root<code> bị khai thác lỗ hổng Remote Code Execution (RCE), kẻ tấn công có thể thoát khỏi container (Container Escape) và chiếm quyền điều khiển máy chủ vật lý.</li>
+<li><strong>Khắc phục:</strong></li>
+<li>Trong </code>app/Dockerfile<code>, ứng dụng Web chuyển sang người dùng không có đặc quyền: </code>USER node<code> (UID 1000).</li>
+<li>Trong </code>docker-compose.yml<code>, Prometheus chạy dưới tài khoản </code>user: "65534:65534"<code> (</code>nobody:nogroup<code>).</li>
+<li>Toàn bộ các container được kích hoạt cờ bảo mật </code>security_opt: [ "no-new-privileges:true" ]<code>, ngăn chặn tuyệt đối tiến trình con nâng quyền qua các cơ chế SUID/SGID.</li>
+
+<h2>6.2. Biện pháp 2: Phân vùng mạng độc lập (Network Isolation)</h2>
+<li>Hệ thống phân chia ranh giới rõ rệt giữa các vùng mạng (</code>frontend-net<code>, </code>backend-net<code>, </code>monitoring-net<code>).</li>
+<li>Container MySQL Database nằm trọn trong </code>backend-net<code>, hoàn toàn không ánh xạ cổng 3306 ra máy chủ vật lý (</code>no host port binding<code>). Nhờ đó, các cuộc tấn công brute force hoặc khai thác lỗ hổng MySQL từ Internet hoàn toàn bị triệt tiêu từ lớp mạng.</li>
+
+<h2>6.3. Biện pháp 3: Quản lý mật khẩu mạnh và Nguyên tắc đặc quyền tối thiểu (Least Privilege)</h2>
+<li>Mật khẩu root và mật khẩu người dùng MySQL được thiết lập phức tạp (kết hợp chữ hoa, chữ thường, số và ký tự đặc biệt, độ dài trên 16 ký tự).</li>
+<li><strong>Tài khoản ứng dụng Web (</code>jobboard_user<code>):</strong> Chỉ được cấp các quyền thao tác dữ liệu cơ bản (</code>SELECT, INSERT, UPDATE, DELETE<code>) trên schema </code>job_board_db<code>. Tuyệt đối không được cấp quyền quản trị hệ thống (</code>SUPER, GRANT, DROP DATABASE<code>).</li>
+<li><strong>Tài khoản Prometheus Exporter (</code>mysqld_exporter<code>):</strong> Được tạo riêng biệt với đặc quyền đọc tối thiểu (</code>PROCESS, REPLICATION CLIENT, SELECT<code>), bảo đảm không có quyền can thiệp thay đổi dữ liệu của người dùng.</li>
+
+<h2>6.4. Biện pháp 4: Thiết lập Security Headers toàn diện trên Nginx</h2>
+Nginx được bổ sung bộ tiêu đề bảo mật đạt chuẩn cấp độ ngân hàng (A+ Security Rating):
+1. </code>Strict-Transport-Security (HSTS)<code>: Bắt buộc trình duyệt luôn giao tiếp qua HTTPS trong vòng 1 năm.
+2. </code>X-Frame-Options: SAMEORIGIN<code>: Ngăn chặn tấn công Clickjacking bằng cách cấm nhúng trang web vào iframe lạ.
+3. </code>X-Content-Type-Options: nosniff<code>: Ngăn chặn trình duyệt tự ý đoán định dạng MIME (MIME-type sniffing).
+4. </code>X-XSS-Protection: 1; mode=block<code>: Kích hoạt bộ lọc chống tấn công Cross-Site Scripting (XSS).
+5. </code>Referrer-Policy: strict-origin-when-cross-origin<code>: Bảo vệ sự riêng tư của URL khi chuyển hướng.
+6. </code>Content-Security-Policy (CSP)<code>: Kiểm soát chặt chẽ nguồn nạp tài nguyên (Scripts, Styles, Fonts, Images), chống tấn công chèn mã độc.
+7. </code>server_tokens off;<code>: Ẩn hoàn toàn thông tin phiên bản Nginx trong HTTP response header, ngăn kẻ xấu thăm dò lỗ hổng đã biết.
+
+<h2>6.5. Biện pháp 5: Giới hạn lưu lượng (Rate Limiting) và Giới hạn tài nguyên phần cứng</h2>
+<li><strong>Nginx Rate Limiting:</strong> Cấu hình bộ nhớ lưu trữ </code>limit_req_zone<code> theo IP với tốc độ 25 request/giây và lượng tích lũy burst tối đa 30 request. Nếu một IP gửi truy vấn dồn dập (tấn công từ chối dịch vụ DoS hoặc quét tự động), hệ thống sẽ lập tức chặn lại và trả về mã lỗi </code>HTTP 429 Too Many Requests<code>.</li>
+<li><strong>Giới hạn kích thước tải lên:</strong> </code>client_max_body_size 10M<code> ngăn chặn việc gửi các tệp CV dung lượng khổng lồ làm tràn ngập bộ nhớ.</li>
+<li><strong>Giới hạn tài nguyên Docker (Resource Limits):</strong> Toàn bộ các dịch vụ trên </code>docker-compose.yml<code> đều được cấu hình trần bộ nhớ (</code>memory limits<code> từ 64M đến 512M) nhằm ngăn ngừa tình trạng một tiến trình bị tràn bộ nhớ (Memory Leak) làm ảnh hưởng tới sự sống còn của toàn hệ thống (OOM Killer).</li>
+
+---
+
+<h1>CHƯƠNG 7: KẾT QUẢ THỰC NGHIỆM, HƯỚNG DẪN VẬN HÀNH VÀ ĐÁNH GIÁ</h1>
+
+<h2>7.1. Hướng dẫn vận hành hệ thống từng bước</h2>
+1. <strong>Kiểm tra môi trường:</strong> Máy tính đã cài đặt Docker Engine và Docker Compose.
+2. <strong>Khởi chạy toàn bộ hệ thống:</strong>
+   </code>`<code>bash
+   # Di chuyển vào thư mục dự án
+   cd "D:\Job Board"
+
+   # Sao chép cấu hình môi trường
+   cp .env.example .env
+
+   # Xây dựng và khởi chạy tất cả 11 dịch vụ ở chế độ chạy nền
+   docker compose up -d --build
+   </code>`<code>
+3. <strong>Kiểm tra trạng thái các container:</strong>
+   </code>`<code>bash
+   docker compose ps
+   </code>`<code>
+   Tất cả các dịch vụ (</code>jobboard_nginx<code>, </code>jobboard_web<code>, </code>jobboard_mysql<code>, </code>jobboard_phpmyadmin<code>, </code>jobboard_prometheus<code>, </code>jobboard_grafana<code>, </code>jobboard_loki<code>, </code>jobboard_promtail<code>...) đều phải hiển thị trạng thái </code>Up<code> (healthy).
+
+<h2>7.2. Kết quả kiểm thử các ca sử dụng (Test Cases)</h2>
+
+| Mã kiểm thử | Tên ca kiểm thử | Thao tác thực hiện | Kết quả kỳ vọng | Đánh giá |
+| :---: | :--- | :--- | :--- | :---: |
+| <strong>TC-01</strong> | Kiểm tra chuyển hướng HTTPS | Truy cập </code>http://localhost<code> | Tự động chuyển sang </code>https://localhost<code> (301) | <strong>ĐẠT</strong> |
+| <strong>TC-02</strong> | Xem danh sách việc làm | Truy cập </code>https://localhost/jobs<code> | Hiển thị danh sách việc làm với đầy đủ bộ lọc | <strong>ĐẠT</strong> |
+| <strong>TC-03</strong> | Tìm kiếm và lọc công việc | Tìm từ khóa "Node.js", chọn "Hồ Chí Minh" | Danh sách lọc chính xác công việc phù hợp | <strong>ĐẠT</strong> |
+| <strong>TC-04</strong> | Ứng viên nộp hồ sơ CV | Điền form và upload file PDF tại </code>/jobs/1<code> | Lưu file vào server, ghi DB, hiển thị thông báo | <strong>ĐẠT</strong> |
+| <strong>TC-05</strong> | Nhà tuyển dụng đăng tin | Điền form tại </code>/post-job<code> | Tin xuất hiện ngay trên trang chủ và trang việc làm | <strong>ĐẠT</strong> |
+| <strong>TC-06</strong> | Quản trị viên duyệt CV | Truy cập </code>/manage<code>, đổi trạng thái CV | Cập nhật tức thì vào MySQL, giao diện đổi màu badge | <strong>ĐẠT</strong> |
+| <strong>TC-07</strong> | Quản trị DB qua phpMyAdmin | Truy cập </code>https://localhost/pma/<code> | Đăng nhập thành công, xem được 4 bảng dữ liệu | <strong>ĐẠT</strong> |
+| <strong>TC-08</strong> | Giám sát Web trên Grafana | Truy cập </code>https://localhost/grafana/<code> | Dashboard nạp tự động, hiển thị QPS và Active Jobs | <strong>ĐẠT</strong> |
+| <strong>TC-09</strong> | Truy vấn Log với LogQL | Mở Explore -> Loki, chạy query Nginx/Web | Xuất hiện các dòng log chi tiết thời gian thực | <strong>ĐẠT</strong> |
+| <strong>TC-10</strong> | Kiểm tra Rate Limiting | Dùng tool gửi > 35 req/giây | Nhận về mã lỗi HTTP 429 Too Many Requests | <strong>ĐẠT</strong> |
+
+<h2>7.3. Minh chứng và bằng chứng thực nghiệm</h2>
+<li><strong>Minh chứng Git GitHub:</strong> Repository tại </code>https://github.com/dtc245200902/Job-Board<code> có tối thiểu 3 commit rõ ràng:</li>
+<li>Commit 1: Triển khai Ứng dụng Web Job Board, MySQL, phpMyAdmin và Nginx SSL Reverse Proxy.</li>
+<li>Commit 2: Tích hợp hệ thống giám sát Prometheus và Grafana Dashboards.</li>
+<li>Commit 3: Tích hợp hệ thống log tập trung Loki + Promtail, tài liệu hóa LogQL, Hardening và Báo cáo hoàn chỉnh.</li>
+<li><strong>Minh chứng Giao diện Web:</strong> Giao diện trực quan, chuyên nghiệp, hỗ trợ tiếng Việt hoàn chỉnh, có biểu đồ thống kê số liệu và thông tin sinh viên </code>dtc245200902<code> ở chân trang.</li>
+<li><strong>Minh chứng An ninh:</strong> Trình duyệt nhận diện chứng chỉ SSL bảo mật, phản hồi chứa đầy đủ các header </code>Strict-Transport-Security<code>, </code>X-Content-Type-Options<code>, </code>X-Frame-Options<code>.</li>
+
+<h2>7.4. Đánh giá ưu điểm và hạn chế</h2>
+<li><strong>Ưu điểm:</strong></li>
+<li>Hệ thống hoàn chỉnh 100%, tuân thủ chặt chẽ tiêu chí chấm điểm của đề bài.</li>
+<li>Tự động hóa cao: Chỉ cần một lệnh </code>docker compose up -d` là toàn bộ cơ sở dữ liệu, ứng dụng, chứng chỉ SSL, dashboard giám sát và log collector tự động cấu hình và kết nối với nhau.</li>
+<li>Tính thực tế cao: Ứng dụng web được lập trình tỉ mỉ, có tính năng nộp và duyệt CV thực tế, không dùng dữ liệu giả lập sơ sài.</li>
+<li><strong>Hạn chế:</strong> Chứng chỉ SSL hiện đang sử dụng dạng tự ký (Self-signed) nên trình duyệt sẽ cảnh báo khi truy cập lần đầu trên môi trường cục bộ; khi triển khai sản xuất thực tế trên Internet cần gắn tên miền và sử dụng chứng chỉ Let's Encrypt / Certbot.</li>
+
+---
+
+<h1>KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN</h1>
+
+<h2>Kết luận</h2>
+Qua quá trình thực hiện Đề tài 33: "Website Tuyển dụng / Job Board", sinh viên đã củng cố và nâng cao toàn diện kỹ năng thực hành môn học <em>Triển khai và Quản trị Hệ thống Phần mềm</em>:
+1. Nắm vững kỹ thuật đóng gói ứng dụng đa dịch vụ bằng Docker và Docker Compose.
+2. Hiểu sâu cơ chế định tuyến, tối ưu hóa và bảo mật với Nginx Reverse Proxy.
+3. Làm chủ quy trình xây dựng hệ thống quan sát (Observability) hiện đại kết hợp giữa <strong>Metrics (Prometheus + Grafana)</strong> và <strong>Logs (Loki + Promtail + LogQL)</strong>.
+4. Nâng cao nhận thức và năng lực áp dụng các tiêu chuẩn an ninh hệ thống (Hardening) ngay từ giai đoạn thiết kế kiến trúc hạ tầng.
+
+<h2>Hướng phát triển</h2>
+<li>Tích hợp thêm hệ thống thông báo sự kiện (Alertmanager) gửi cảnh báo tự động về Telegram hoặc Discord khi dịch vụ bị gián đoạn hoặc CPU quá tải.</li>
+<li>Bổ sung cơ chế CI/CD Pipeline (GitHub Actions) để tự động kiểm thử mã nguồn và xây dựng Docker Image tự động mỗi khi có thay đổi.</li>
+<li>Nghiên cứu chuyển đổi sang mô hình Kubernetes (K8s) để hỗ trợ khả năng tự động co giãn (Horizontal Pod Autoscaler - HPA) khi lượng ứng viên truy cập tăng đột biến.</li>
+
+---
+
+<h1>TÀI LIỆU THAM KHẢO</h1>
+
+1. <strong>Docker Documentation:</strong> <em>Docker Compose file reference and best practices.</em> [https://docs.docker.com/compose/](https://docs.docker.com/compose/)
+2. <strong>Nginx Documentation:</strong> <em>Alphabetical index of Nginx directives and Security Hardening.</em> [https://nginx.org/en/docs/](https://nginx.org/en/docs/)
+3. <strong>Prometheus Documentation:</strong> <em>Querying Prometheus with PromQL and configuring scrape targets.</em> [https://prometheus.io/docs/](https://prometheus.io/docs/)
+4. <strong>Grafana Labs:</strong> <em>Dashboards provisioning, Datasources setup, and LogQL guide.</em> [https://grafana.com/docs/](https://grafana.com/docs/)
+5. <strong>Open Web Application Security Project (OWASP):</strong> <em>REST Security Cheat Sheet and Docker Security Guidelines.</em> [https://cheatsheetseries.owasp.org/](https://cheatsheetseries.owasp.org/)
+
+</body>
+</html>

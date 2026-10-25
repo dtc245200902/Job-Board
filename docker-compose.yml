@@ -1,0 +1,275 @@
+services:
+  # 1. MySQL Database Service
+  db:
+    image: mysql:8.0
+    container_name: jobboard_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-RootSecurePass_2026!}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-job_board_db}
+      MYSQL_USER: ${MYSQL_USER:-jobboard_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-JobBoardSecretPass_2026!}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - backend-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-RootSecurePass_2026!}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  # 2. phpMyAdmin Database Management Tool
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: jobboard_phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      UPLOAD_LIMIT: 20M
+      PMA_ABSOLUTE_URI: https://localhost/pma/
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - backend-net
+      - frontend-net
+    ports:
+      - "${PMA_PORT:-8081}:80"
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  # 3. Web Application (Job Board - Node.js/Express)
+  web:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: jobboard_web
+    restart: unless-stopped
+    environment:
+      PORT: 3000
+      NODE_ENV: production
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: ${MYSQL_USER:-jobboard_user}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-JobBoardSecretPass_2026!}
+      DB_NAME: ${MYSQL_DATABASE:-job_board_db}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - backend-net
+      - frontend-net
+      - monitoring-net
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+
+  # 4. Nginx Reverse Proxy with HTTPS & Security Headers
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: jobboard_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - nginx_logs:/var/log/nginx
+    depends_on:
+      - web
+      - phpmyadmin
+      - grafana
+    networks:
+      - frontend-net
+      - monitoring-net
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+
+  # 5. Prometheus Time-Series Database
+  prometheus:
+    image: prom/prometheus:v2.52.0
+    container_name: jobboard_prometheus
+    restart: unless-stopped
+    user: "65534:65534"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090"
+    networks:
+      - monitoring-net
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+
+  # 6. Grafana Visualization & Dashboards
+  grafana:
+    image: grafana/grafana:11.0.0
+    container_name: jobboard_grafana
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD:-AdminGrafanaPass_2026!}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=https://localhost/grafana/
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./monitoring/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/dashboards:/etc/grafana/dashboards:ro
+    ports:
+      - "${GRAFANA_PORT:-3001}:3000"
+    networks:
+      - frontend-net
+      - monitoring-net
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+
+  # 7. MySQL Exporter for Prometheus
+  mysqld-exporter:
+    image: prom/mysqld-exporter:v0.15.1
+    container_name: jobboard_mysql_exporter
+    restart: unless-stopped
+    volumes:
+      - ./monitoring/prometheus/.my.cnf:/etc/.my.cnf:ro
+    command:
+      - --config.my-cnf=/etc/.my.cnf
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - backend-net
+      - monitoring-net
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+
+  # 8. Nginx Prometheus Exporter
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter:1.1.0
+    container_name: jobboard_nginx_exporter
+    restart: unless-stopped
+    command:
+      - -nginx.scrape-uri=http://nginx:8080/stub_status
+    depends_on:
+      - nginx
+    networks:
+      - frontend-net
+      - monitoring-net
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+
+  # 9. Node Exporter (Host & System Metrics)
+  node-exporter:
+    image: prom/node-exporter:v1.8.1
+    container_name: jobboard_node_exporter
+    restart: unless-stopped
+    networks:
+      - monitoring-net
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+
+  # 10. Loki Centralized Log Storage
+  loki:
+    image: grafana/loki:3.0.0
+    container_name: jobboard_loki
+    restart: unless-stopped
+    volumes:
+      - ./logging/loki/loki-config.yml:/etc/loki/local-config.yaml:ro
+      - loki_data:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - "${LOKI_PORT:-3100}:3100"
+    networks:
+      - monitoring-net
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+
+  # 11. Promtail Log Shipper Agent
+  promtail:
+    image: grafana/promtail:3.0.0
+    container_name: jobboard_promtail
+    restart: unless-stopped
+    volumes:
+      - ./logging/promtail/promtail-config.yml:/etc/promtail/config.yml:ro
+      - nginx_logs:/var/log/nginx:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
+    networks:
+      - monitoring-net
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+
+networks:
+  frontend-net:
+    driver: bridge
+  backend-net:
+    driver: bridge
+  monitoring-net:
+    driver: bridge
+
+volumes:
+  mysql_data:
+  prometheus_data:
+  grafana_data:
+  loki_data:
+  nginx_logs:

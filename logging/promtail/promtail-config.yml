@@ -1,0 +1,58 @@
+# ========================================================
+# Promtail Configuration
+# Student: dtc245200902 | Topic 33: Job Board Promtail Agent
+# ========================================================
+
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  # 1. Nginx Web Server Access Logs
+  - job_name: nginx-access
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: nginx
+          service: nginx
+          log_type: access
+          __path__: /var/log/nginx/*access.log
+
+  # 2. Nginx Error Logs
+  - job_name: nginx-error
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: nginx
+          service: nginx
+          log_type: error
+          __path__: /var/log/nginx/*error.log
+
+  # 3. Docker Containers System Logs
+  - job_name: docker-containers
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: containers
+          __path__: /var/lib/docker/containers/*/*-json.log
+    pipeline_stages:
+      - json:
+          expressions:
+            output: log
+            stream: stream
+            attrs: attrs
+            tag: attrs.tag
+      - regex:
+          expression: '^\[(?P<timestamp>[^\]]+)\] (?P<content>.*)$'
+      - labels:
+          stream:
+          tag:
