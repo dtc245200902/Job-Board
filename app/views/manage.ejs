@@ -1,0 +1,190 @@
+<%- include('header') %>
+
+<section class="page-header">
+    <div class="page-header-container">
+        <h1>Bảng Quản Lý Tuyển Dụng & Hồ Sơ CV</h1>
+        <p>Trung tâm giám sát, duyệt hồ sơ ứng viên và quản lý toàn diện các vị trí tuyển dụng của doanh nghiệp.</p>
+    </div>
+</section>
+
+<div class="dashboard-container">
+    <!-- Top KPI Cards -->
+    <div class="dashboard-kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-icon icon-blue"><i class="fa-solid fa-briefcase"></i></div>
+            <div class="kpi-data">
+                <span class="kpi-value"><%= stats.total_jobs || 0 %></span>
+                <span class="kpi-label">Tổng số tin tuyển dụng</span>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon icon-purple"><i class="fa-solid fa-file-invoice"></i></div>
+            <div class="kpi-data">
+                <span class="kpi-value"><%= stats.total_applications || 0 %></span>
+                <span class="kpi-label">Tổng số CV đã nộp</span>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon icon-orange"><i class="fa-solid fa-clock-rotate-left"></i></div>
+            <div class="kpi-data">
+                <span class="kpi-value"><%= stats.pending_applications || 0 %></span>
+                <span class="kpi-label">Hồ sơ chờ xem xét</span>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon icon-green"><i class="fa-solid fa-circle-check"></i></div>
+            <div class="kpi-data">
+                <span class="kpi-value"><%= stats.accepted_applications || 0 %></span>
+                <span class="kpi-label">Ứng viên đã tiếp nhận</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 1: Candidate Applications / CV Management -->
+    <div class="card dashboard-section-card">
+        <div class="table-header-bar">
+            <div>
+                <h2><i class="fa-solid fa-users-viewfinder text-primary"></i> Quản Lý Danh Sách Ứng Viên Nộp CV</h2>
+                <span class="sub-text">Cập nhật trạng thái duyệt hồ sơ và tải CV ứng viên</span>
+            </div>
+            <span class="badge badge-info"><%= applications.length %> Hồ sơ</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Họ tên ứng viên</th>
+                        <th>Thông tin liên hệ</th>
+                        <th>Vị trí ứng tuyển</th>
+                        <th>File CV đính kèm</th>
+                        <th>Ngày nộp</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (applications.length === 0) { %>
+                        <tr>
+                            <td colspan="7" class="text-center py-4 text-muted">Chưa có ứng viên nào nộp hồ sơ.</td>
+                        </tr>
+                    <% } else { %>
+                        <% applications.forEach(app => { %>
+                            <tr>
+                                <td>
+                                    <strong><%= app.candidate_name %></strong>
+                                    <% if (app.cover_letter) { %>
+                                        <div class="cover-letter-preview" title="<%= app.cover_letter %>">
+                                            <i class="fa-regular fa-comment-dots"></i> <%= app.cover_letter.substring(0, 45) %>...
+                                        </div>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <div><i class="fa-regular fa-envelope"></i> <%= app.candidate_email %></div>
+                                    <div><i class="fa-solid fa-phone"></i> <%= app.candidate_phone %></div>
+                                </td>
+                                <td>
+                                    <span class="font-medium"><%= app.job_title %></span>
+                                    <div class="text-muted"><%= app.company_name %></div>
+                                </td>
+                                <td>
+                                    <a href="/uploads/<%= app.cv_filename %>" target="_blank" class="cv-download-btn">
+                                        <i class="fa-solid fa-file-pdf"></i> Xem CV
+                                    </a>
+                                </td>
+                                <td>
+                                    <%= new Date(app.applied_at).toLocaleString('vi-VN') %>
+                                </td>
+                                <td>
+                                    <span class="status-badge status-<%= app.status %>">
+                                        <%= app.status === 'pending' ? 'Chờ duyệt' : 
+                                            app.status === 'reviewing' ? 'Đang lọc' : 
+                                            app.status === 'interviewed' ? 'Đã phỏng vấn' : 
+                                            app.status === 'accepted' ? 'Trúng tuyển' : 'Từ chối' %>
+                                    </span>
+                                </td>
+                                <td>
+                                    <form action="/api/applications/<%= app.id %>/status" method="POST" class="inline-form">
+                                        <select name="status" onchange="this.form.submit()" class="status-select">
+                                            <option value="pending" <%= app.status === 'pending' ? 'selected' : '' %>>Chờ duyệt</option>
+                                            <option value="reviewing" <%= app.status === 'reviewing' ? 'selected' : '' %>>Đang lọc</option>
+                                            <option value="interviewed" <%= app.status === 'interviewed' ? 'selected' : '' %>>Phỏng vấn</option>
+                                            <option value="accepted" <%= app.status === 'accepted' ? 'selected' : '' %>>Trúng tuyển</option>
+                                            <option value="rejected" <%= app.status === 'rejected' ? 'selected' : '' %>>Từ chối</option>
+                                        </select>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Section 2: Manage Job Postings -->
+    <div class="card dashboard-section-card mt-4">
+        <div class="table-header-bar">
+            <div>
+                <h2><i class="fa-solid fa-list-check text-primary"></i> Quản Lý Tin Tuyển Dụng</h2>
+                <span class="sub-text">Danh sách các tin đăng đang chạy trên hệ thống</span>
+            </div>
+            <a href="/post-job" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i> Đăng tin mới</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Tiêu đề công việc</th>
+                        <th>Công ty</th>
+                        <th>Địa điểm / Loại hình</th>
+                        <th>Lương</th>
+                        <th>Lượt xem</th>
+                        <th>Số CV</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% jobs.forEach(job => { %>
+                        <tr>
+                            <td>
+                                <a href="/jobs/<%= job.id %>" class="font-bold text-dark"><%= job.title %></a>
+                                <div class="text-muted"><%= job.category_name %></div>
+                            </td>
+                            <td><%= job.company_name %></td>
+                            <td>
+                                <div><%= job.location %></div>
+                                <span class="badge badge-gray"><%= job.job_type %></span>
+                            </td>
+                            <td><strong class="text-success"><%= job.salary_range %></strong></td>
+                            <td><%= job.views %></td>
+                            <td>
+                                <span class="badge badge-primary"><%= job.application_count %> hồ sơ</span>
+                            </td>
+                            <td>
+                                <span class="status-badge status-<%= job.status %>">
+                                    <%= job.status === 'active' ? 'Đang tuyển' : 'Đã đóng' %>
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-btn-group">
+                                    <a href="/jobs/<%= job.id %>" class="btn-action btn-action-view" title="Xem chi tiết"><i class="fa-solid fa-eye"></i></a>
+                                    <form action="/api/jobs/<%= job.id %>/delete" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa tin tuyển dụng này? Toàn bộ CV liên quan cũng sẽ bị gỡ bỏ.');">
+                                        <button type="submit" class="btn-action btn-action-delete" title="Xóa tin"><i class="fa-solid fa-trash"></i></button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<%- include('footer') %>

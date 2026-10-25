@@ -1,0 +1,115 @@
+<%- include('header') %>
+
+<section class="page-header">
+    <div class="page-header-container">
+        <h1>Đăng Tin Tuyển Dụng Mới</h1>
+        <p>Tiếp cận ứng viên xuất sắc trong mạng lưới nhân tài công nghệ và kinh doanh.</p>
+    </div>
+</section>
+
+<div class="form-container-narrow">
+    <% if (typeof success !== 'undefined' && success) { %>
+        <div class="alert alert-success animate-fade-in">
+            <i class="fa-solid fa-circle-check"></i>
+            <div>
+                <strong>Đăng tin thành công!</strong>
+                <p>Tin tuyển dụng của bạn đã được khởi tạo và hiển thị công khai trên hệ thống. Bạn có thể theo dõi số lượt ứng tuyển tại <a href="/manage" style="text-decoration: underline;">Trang Quản Lý</a>.</p>
+            </div>
+        </div>
+    <% } %>
+
+    <div class="card form-card">
+        <form action="/post-job" method="POST" class="main-form">
+            <div class="form-section-title">
+                <i class="fa-solid fa-briefcase"></i> Thông tin cơ bản
+            </div>
+
+            <div class="form-group">
+                <label>Tiêu đề tuyển dụng <span class="text-danger">*</span></label>
+                <input type="text" name="title" required placeholder="Ví dụ: Senior DevOps Engineer, Frontend Developer..." class="form-control">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Doanh nghiệp tuyển dụng <span class="text-danger">*</span></label>
+                    <select name="company_id" required class="form-control">
+                        <% companies.forEach(comp => { %>
+                            <option value="<%= comp.id %>"><%= comp.name %> (<%= comp.location %>)</option>
+                        <% }); %>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Ngành nghề / Danh mục <span class="text-danger">*</span></label>
+                    <select name="category_id" required class="form-control">
+                        <% categories.forEach(cat => { %>
+                            <option value="<%= cat.id %>"><%= cat.name %></option>
+                        <% }); %>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Địa điểm làm việc <span class="text-danger">*</span></label>
+                    <input type="text" name="location" required placeholder="Ví dụ: Hà Nội, TP.HCM hoặc Remote" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Hình thức làm việc <span class="text-danger">*</span></label>
+                    <select name="job_type" class="form-control">
+                        <option value="Full-time">Toàn thời gian (Full-time)</option>
+                        <option value="Part-time">Bán thời gian (Part-time)</option>
+                        <option value="Remote">Làm việc từ xa (Remote)</option>
+                        <option value="Internship">Thực tập sinh (Internship)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Mức lương dự kiến <span class="text-danger">*</span></label>
+                    <input type="text" name="salary_range" required placeholder="Ví dụ: 25 - 40 triệu VNĐ, Thỏa thuận..." class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Yêu cầu kinh nghiệm</label>
+                    <input type="text" name="experience_level" placeholder="Ví dụ: 1-2 năm, 3+ năm, Không yêu cầu..." class="form-control">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Hạn chót nhận hồ sơ</label>
+                <input type="date" name="deadline" class="form-control">
+            </div>
+
+            <div class="form-section-title mt-4">
+                <i class="fa-solid fa-align-left"></i> Nội dung chi tiết
+            </div>
+
+            <div class="form-group">
+                <label>Mô tả công việc <span class="text-danger">*</span></label>
+                <textarea name="description" rows="5" required placeholder="Chi tiết trách nhiệm, công việc hàng ngày..." class="form-control"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Yêu cầu ứng viên <span class="text-danger">*</span></label>
+                <textarea name="requirements" rows="5" required placeholder="Kỹ năng chuyên môn, trình độ học vấn, kinh nghiệm yêu cầu..." class="form-control"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Quyền lợi & Đãi ngộ</label>
+                <textarea name="benefits" rows="4" placeholder="Chế độ bảo hiểm, thưởng, du lịch, trang thiết bị làm việc..." class="form-control"></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Xuất bản tin tuyển dụng
+                </button>
+                <a href="/jobs" class="btn btn-ghost">Hủy bỏ</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<%- include('footer') %>

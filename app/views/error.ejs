@@ -1,0 +1,15 @@
+<%- include('header') %>
+
+<div class="error-container">
+    <div class="card error-card">
+        <div class="error-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <h1>Đã Xảy Ra Lỗi</h1>
+        <p class="error-message"><%= typeof error !== 'undefined' ? error : 'Không thể hoàn thành yêu cầu. Vui lòng thử lại sau.' %></p>
+        <div class="error-actions">
+            <a href="/" class="btn btn-primary"><i class="fa-solid fa-house"></i> Quay về Trang Chủ</a>
+            <a href="/jobs" class="btn btn-outline"><i class="fa-solid fa-compass"></i> Tìm Việc Làm</a>
+        </div>
+    </div>
+</div>
+
+<%- include('footer') %>

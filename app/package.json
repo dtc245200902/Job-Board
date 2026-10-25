@@ -1,0 +1,19 @@
+{
+  "name": "job-board-app",
+  "version": "1.0.0",
+  "description": "Job Board Recruitment Web Platform - Topic 33",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.11.5",
+    "prom-client": "^15.1.3"
+  }
+}

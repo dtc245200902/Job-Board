@@ -1,0 +1,169 @@
+<%- include('header') %>
+
+<!-- Hero Banner Section -->
+<section class="hero-section">
+    <div class="hero-container">
+        <div class="hero-badge">
+            <i class="fa-solid fa-sparkles"></i> Nền Tảng Tuyển Dụng Công Nghệ & Doanh Nghiệp 2026
+        </div>
+        <h1 class="hero-title">
+            Khám Phá <span class="gradient-text">Cơ Hội Nghề Nghiệp</span> & Nâng Tầm Tương Lai
+        </h1>
+        <p class="hero-subtitle">
+            Hàng trăm vị trí việc làm chất lượng cao từ các tập đoàn công nghệ và công ty hàng đầu. Nộp CV trực tuyến nhanh chóng, bảo mật và hoàn toàn miễn phí.
+        </p>
+
+        <!-- Search Box -->
+        <div class="search-box-card">
+            <form action="/jobs" method="GET" class="search-form">
+                <div class="search-input-group">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" name="search" placeholder="Vị trí, từ khóa (Node.js, DevOps, UI/UX...)" autocomplete="off">
+                </div>
+
+                <div class="search-input-group">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <select name="category">
+                        <option value="">Tất cả ngành nghề</option>
+                        <% categories.forEach(cat => { %>
+                            <option value="<%= cat.slug %>"><%= cat.name %></option>
+                        <% }); %>
+                    </select>
+                </div>
+
+                <div class="search-input-group">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <select name="location">
+                        <option value="">Tất cả địa điểm</option>
+                        <option value="Hà Nội">Hà Nội</option>
+                        <option value="Hồ Chí Minh">TP. Hồ Chí Minh</option>
+                        <option value="Đà Nẵng">Đà Nẵng</option>
+                        <option value="Remote">Làm việc từ xa (Remote)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary search-submit-btn">
+                    <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
+                </button>
+            </form>
+        </div>
+
+        <!-- System Stats Counter -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon icon-jobs"><i class="fa-solid fa-briefcase"></i></div>
+                <div class="stat-info">
+                    <span class="stat-number"><%= stats.active_jobs %>+</span>
+                    <span class="stat-label">Việc làm đang tuyển</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon icon-companies"><i class="fa-solid fa-building"></i></div>
+                <div class="stat-info">
+                    <span class="stat-number"><%= stats.total_companies %>+</span>
+                    <span class="stat-label">Doanh nghiệp hàng đầu</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon icon-applications"><i class="fa-solid fa-file-lines"></i></div>
+                <div class="stat-info">
+                    <span class="stat-number"><%= stats.total_applications %>+</span>
+                    <span class="stat-label">Hồ sơ ứng viên nộp</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon icon-secure"><i class="fa-solid fa-shield-check"></i></div>
+                <div class="stat-info">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Bảo mật Docker & Nginx</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Job Categories Section -->
+<section class="section categories-section">
+    <div class="section-container">
+        <div class="section-header">
+            <div>
+                <span class="section-subtitle">Ngành nghề đa dạng</span>
+                <h2 class="section-title">Danh Mục Nghề Nghiệp Nổi Bật</h2>
+            </div>
+            <a href="/jobs" class="view-all-link">Xem tất cả <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+
+        <div class="categories-grid">
+            <% categories.forEach(cat => { %>
+                <a href="/jobs?category=<%= cat.slug %>" class="category-card">
+                    <div class="cat-icon-box">
+                        <i class="fa-solid fa-<%= cat.icon %>"></i>
+                    </div>
+                    <h3 class="cat-title"><%= cat.name %></h3>
+                    <p class="cat-desc"><%= cat.description %></p>
+                    <span class="cat-count"><strong><%= cat.job_count %></strong> vị trí mở</span>
+                </a>
+            <% }); %>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Jobs Section -->
+<section class="section jobs-section">
+    <div class="section-container">
+        <div class="section-header">
+            <div>
+                <span class="section-subtitle">Cơ hội việc làm hot</span>
+                <h2 class="section-title">Việc Làm Tuyển Gấp & Đãi Ngộ Cao</h2>
+            </div>
+            <a href="/jobs" class="btn btn-outline">Xem toàn bộ <%= stats.active_jobs %> việc làm</a>
+        </div>
+
+        <div class="jobs-grid">
+            <% featuredJobs.forEach(job => { %>
+                <div class="job-card">
+                    <div class="job-card-header">
+                        <img src="<%= job.company_logo %>" alt="<%= job.company_name %>" class="company-logo">
+                        <div class="job-header-info">
+                            <h3 class="job-title">
+                                <a href="/jobs/<%= job.id %>"><%= job.title %></a>
+                            </h3>
+                            <span class="company-name"><%= job.company_name %></span>
+                        </div>
+                    </div>
+
+                    <div class="job-tags">
+                        <span class="tag tag-location"><i class="fa-solid fa-location-dot"></i> <%= job.location %></span>
+                        <span class="tag tag-type"><i class="fa-solid fa-clock"></i> <%= job.job_type %></span>
+                        <span class="tag tag-exp"><i class="fa-solid fa-user-gear"></i> <%= job.experience_level %></span>
+                    </div>
+
+                    <p class="job-snippet"><%= job.description.substring(0, 130) %>...</p>
+
+                    <div class="job-card-footer">
+                        <div class="job-salary">
+                            <i class="fa-solid fa-coins"></i> <%= job.salary_range %>
+                        </div>
+                        <a href="/jobs/<%= job.id %>" class="btn btn-primary btn-sm">Ứng tuyển ngay</a>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Banner -->
+<section class="cta-section">
+    <div class="cta-container">
+        <div class="cta-content">
+            <h2>Bạn Là Nhà Tuyển Dụng Đang Tìm Kiếm Nhân Tài?</h2>
+            <p>Đăng tin tuyển dụng ngay hôm nay để tiếp cận hàng nghìn ứng viên chất lượng cao trong ngành công nghệ và kinh doanh.</p>
+            <div class="cta-buttons">
+                <a href="/post-job" class="btn btn-white"><i class="fa-solid fa-plus"></i> Đăng tin tuyển dụng mới</a>
+                <a href="/manage" class="btn btn-ghost"><i class="fa-solid fa-sliders"></i> Quản lý tin & Ứng viên</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include('footer') %>

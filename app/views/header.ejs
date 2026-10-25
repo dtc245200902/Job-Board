@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof title !== 'undefined' ? title : 'Job Board - Cổng Tuyển Dụng Hàng Đầu' %></title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="brand-logo">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-briefcase"></i>
+                </div>
+                <span>Job<strong>Board</strong></span>
+            </a>
+
+            <div class="nav-links">
+                <a href="/" class="nav-link"><i class="fa-solid fa-house"></i> Trang chủ</a>
+                <a href="/jobs" class="nav-link"><i class="fa-solid fa-compass"></i> Tìm việc làm</a>
+                <a href="/post-job" class="nav-link"><i class="fa-solid fa-circle-plus"></i> Đăng tin tuyển dụng</a>
+                <a href="/manage" class="nav-link"><i class="fa-solid fa-chart-pie"></i> Quản lý & CV</a>
+            </div>
+
+            <div class="nav-actions">
+                <a href="/post-job" class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-paper-plane"></i> Đăng tin ngay
+                </a>
+            </div>
+        </div>
+    </nav>
+    <main class="main-content">

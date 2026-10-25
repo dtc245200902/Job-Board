@@ -1,0 +1,182 @@
+<%- include('header') %>
+
+<div class="job-detail-container">
+    <% if (typeof success !== 'undefined' && success) { %>
+        <div class="alert alert-success animate-fade-in">
+            <i class="fa-solid fa-circle-check"></i>
+            <div>
+                <strong>Nộp hồ sơ thành công!</strong>
+                <p>Hồ sơ ứng tuyển và CV của bạn đã được chuyển tới bộ phận tuyển dụng của <strong><%= job.company_name %></strong>. Chúng tôi sẽ phản hồi qua email hoặc số điện thoại sớm nhất.</p>
+            </div>
+        </div>
+    <% } %>
+
+    <!-- Header Card -->
+    <div class="job-detail-header-card">
+        <div class="header-main-info">
+            <img src="<%= job.company_logo %>" alt="<%= job.company_name %>" class="company-logo-lg">
+            <div>
+                <span class="category-badge"><%= job.category_name %></span>
+                <h1 class="detail-title"><%= job.title %></h1>
+                <div class="detail-company-sub">
+                    <span><i class="fa-solid fa-building"></i> <%= job.company_name %></span>
+                    <span><i class="fa-solid fa-location-dot"></i> <%= job.location %></span>
+                    <span><i class="fa-regular fa-eye"></i> <%= job.views %> lượt xem</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="header-action-box">
+            <div class="salary-highlight">
+                <span class="label">Mức lương dự kiến</span>
+                <span class="amount"><%= job.salary_range %></span>
+            </div>
+            <button class="btn btn-primary btn-lg" onclick="document.getElementById('applySection').scrollIntoView({behavior: 'smooth'})">
+                <i class="fa-solid fa-paper-plane"></i> Ứng tuyển ngay
+            </button>
+        </div>
+    </div>
+
+    <!-- Body Layout -->
+    <div class="job-detail-grid">
+        <!-- Main Description -->
+        <div class="job-detail-main">
+            <div class="card content-card">
+                <h2><i class="fa-solid fa-file-lines text-primary"></i> Mô tả công việc</h2>
+                <div class="formatted-text">
+                    <p style="white-space: pre-line;"><%= job.description %></p>
+                </div>
+
+                <h2 class="mt-4"><i class="fa-solid fa-list-check text-primary"></i> Yêu cầu ứng viên</h2>
+                <div class="formatted-text">
+                    <p style="white-space: pre-line;"><%= job.requirements %></p>
+                </div>
+
+                <h2 class="mt-4"><i class="fa-solid fa-gift text-primary"></i> Quyền lợi & Chế độ đãi ngộ</h2>
+                <div class="formatted-text">
+                    <p style="white-space: pre-line;"><%= job.benefits %></p>
+                </div>
+            </div>
+
+            <!-- Apply Form Section -->
+            <div class="card content-card apply-card" id="applySection">
+                <div class="apply-header">
+                    <h2><i class="fa-solid fa-file-arrow-up text-primary"></i> Ứng tuyển vị trí này</h2>
+                    <p>Hãy hoàn thành biểu mẫu bên dưới và đính kèm CV mới nhất của bạn (PDF, DOC, DOCX tối đa 10MB).</p>
+                </div>
+
+                <form action="/jobs/<%= job.id %>/apply" method="POST" enctype="multipart/form-data" class="apply-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Họ và tên ứng viên <span class="text-danger">*</span></label>
+                            <input type="text" name="candidate_name" required placeholder="Ví dụ: Nguyễn Văn A" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Địa chỉ Email <span class="text-danger">*</span></label>
+                            <input type="email" name="candidate_email" required placeholder="email@domain.com" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Số điện thoại liên hệ <span class="text-danger">*</span></label>
+                            <input type="tel" name="candidate_phone" required placeholder="0912 345 678" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Tải lên File CV (PDF, DOC, DOCX) <span class="text-danger">*</span></label>
+                            <input type="file" name="cv_file" required accept=".pdf,.doc,.docx" class="form-control file-input">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Thư giới thiệu / Lời nhắn gửi nhà tuyển dụng</label>
+                        <textarea name="cover_letter" rows="4" placeholder="Tóm tắt ngắn gọn kinh nghiệm, thế mạnh và lý do bạn muốn ứng tuyển vị trí này..." class="form-control"></textarea>
+                    </div>
+
+                    <div class="apply-submit-row">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Gửi hồ sơ ứng tuyển
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Sidebar Information -->
+        <div class="job-detail-sidebar">
+            <!-- Summary Card -->
+            <div class="card side-card">
+                <h3>Thông tin chung</h3>
+                <ul class="meta-list">
+                    <li>
+                        <i class="fa-solid fa-briefcase"></i>
+                        <div>
+                            <span>Hình thức làm việc:</span>
+                            <strong><%= job.job_type %></strong>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-user-clock"></i>
+                        <div>
+                            <span>Kinh nghiệm:</span>
+                            <strong><%= job.experience_level %></strong>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-calendar-check"></i>
+                        <div>
+                            <span>Hạn nộp hồ sơ:</span>
+                            <strong><%= job.deadline ? new Date(job.deadline).toLocaleDateString('vi-VN') : 'Đang tuyển gấp' %></strong>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-location-crosshairs"></i>
+                        <div>
+                            <span>Địa điểm làm việc:</span>
+                            <strong><%= job.location %></strong>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Company Card -->
+            <div class="card side-card">
+                <h3>Về công ty</h3>
+                <div class="side-company-header">
+                    <img src="<%= job.company_logo %>" alt="<%= job.company_name %>" class="company-logo-sm">
+                    <div>
+                        <h4><%= job.company_name %></h4>
+                        <% if (job.company_website) { %>
+                            <a href="<%= job.company_website %>" target="_blank" class="company-link">
+                                <i class="fa-solid fa-up-right-from-square"></i> Website công ty
+                            </a>
+                        <% } %>
+                    </div>
+                </div>
+                <p class="company-desc-text"><%= job.company_desc %></p>
+            </div>
+
+            <!-- Related Jobs -->
+            <% if (relatedJobs && relatedJobs.length > 0) { %>
+                <div class="card side-card">
+                    <h3>Việc làm liên quan</h3>
+                    <div class="related-jobs-list">
+                        <% relatedJobs.forEach(rel => { %>
+                            <a href="/jobs/<%= rel.id %>" class="related-job-item">
+                                <img src="<%= rel.company_logo %>" alt="<%= rel.company_name %>">
+                                <div>
+                                    <h5><%= rel.title %></h5>
+                                    <span><%= rel.company_name %></span>
+                                </div>
+                            </a>
+                        <% }); %>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<%- include('footer') %>

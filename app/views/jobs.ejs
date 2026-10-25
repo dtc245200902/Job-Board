@@ -1,0 +1,113 @@
+<%- include('header') %>
+
+<section class="page-header">
+    <div class="page-header-container">
+        <h1>Khám Phá Danh Sách Việc Làm</h1>
+        <p>Tìm kiếm vị trí phù hợp với năng lực, mức lương mong muốn và địa điểm làm việc lý tưởng của bạn.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="section-container layout-with-sidebar">
+        <!-- Filter Sidebar -->
+        <aside class="filter-sidebar">
+            <div class="filter-card">
+                <div class="filter-header">
+                    <h3><i class="fa-solid fa-filter"></i> Bộ lọc tìm kiếm</h3>
+                    <a href="/jobs" class="reset-filter">Xóa lọc</a>
+                </div>
+
+                <form action="/jobs" method="GET">
+                    <div class="filter-group">
+                        <label>Từ khóa</label>
+                        <input type="text" name="search" value="<%= filters.search || '' %>" placeholder="Chức danh, kỹ năng..." class="form-control">
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Ngành nghề</label>
+                        <select name="category" class="form-control">
+                            <option value="">Tất cả ngành nghề</option>
+                            <% categories.forEach(cat => { %>
+                                <option value="<%= cat.slug %>" <%= filters.category === cat.slug ? 'selected' : '' %>>
+                                    <%= cat.name %>
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Hình thức làm việc</label>
+                        <select name="type" class="form-control">
+                            <option value="">Tất cả hình thức</option>
+                            <option value="Full-time" <%= filters.type === 'Full-time' ? 'selected' : '' %>>Toàn thời gian (Full-time)</option>
+                            <option value="Part-time" <%= filters.type === 'Part-time' ? 'selected' : '' %>>Bán thời gian (Part-time)</option>
+                            <option value="Remote" <%= filters.type === 'Remote' ? 'selected' : '' %>>Từ xa (Remote)</option>
+                            <option value="Internship" <%= filters.type === 'Internship' ? 'selected' : '' %>>Thực tập (Internship)</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Địa điểm</label>
+                        <select name="location" class="form-control">
+                            <option value="">Tất cả địa điểm</option>
+                            <option value="Hà Nội" <%= filters.location === 'Hà Nội' ? 'selected' : '' %>>Hà Nội</option>
+                            <option value="Hồ Chí Minh" <%= filters.location === 'Hồ Chí Minh' ? 'selected' : '' %>>TP. Hồ Chí Minh</option>
+                            <option value="Đà Nẵng" <%= filters.location === 'Đà Nẵng' ? 'selected' : '' %>>Đà Nẵng</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fa-solid fa-check"></i> Áp dụng bộ lọc
+                    </button>
+                </form>
+            </div>
+        </aside>
+
+        <!-- Job Results List -->
+        <div class="jobs-content">
+            <div class="results-header">
+                <span class="results-count">Tìm thấy <strong><%= jobs.length %></strong> công việc phù hợp</span>
+            </div>
+
+            <% if (jobs.length === 0) { %>
+                <div class="empty-state">
+                    <i class="fa-solid fa-folder-open empty-icon"></i>
+                    <h3>Không tìm thấy công việc nào</h3>
+                    <p>Hãy thử thay đổi từ khóa hoặc điều chỉnh các tiêu chí trong bộ lọc.</p>
+                    <a href="/jobs" class="btn btn-primary">Xem tất cả công việc</a>
+                </div>
+            <% } else { %>
+                <div class="jobs-list">
+                    <% jobs.forEach(job => { %>
+                        <div class="job-list-item">
+                            <div class="job-item-left">
+                                <img src="<%= job.company_logo %>" alt="<%= job.company_name %>" class="company-logo-md">
+                                <div class="job-item-details">
+                                    <div class="job-item-cat"><%= job.category_name %></div>
+                                    <h3 class="job-item-title">
+                                        <a href="/jobs/<%= job.id %>"><%= job.title %></a>
+                                    </h3>
+                                    <div class="job-item-company">
+                                        <i class="fa-regular fa-building"></i> <%= job.company_name %> &bull; <i class="fa-solid fa-location-dot"></i> <%= job.location %>
+                                    </div>
+                                    <div class="job-tags mt-2">
+                                        <span class="tag tag-type"><%= job.job_type %></span>
+                                        <span class="tag tag-exp"><%= job.experience_level %></span>
+                                        <span class="tag tag-salary"><i class="fa-solid fa-coins"></i> <%= job.salary_range %></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="job-item-right">
+                                <span class="job-date"><i class="fa-regular fa-calendar"></i> Hạn: <%= job.deadline ? new Date(job.deadline).toLocaleDateString('vi-VN') : 'Không giới hạn' %></span>
+                                <a href="/jobs/<%= job.id %>" class="btn btn-outline btn-sm">Xem chi tiết</a>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</section>
+
+<%- include('footer') %>

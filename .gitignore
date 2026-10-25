@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Operating System
+.DS_Store
+Thumbs.db
+
+# Docker volumes & local data
+mysql_data/
+grafana_data/
+prometheus_data/
+loki_data/
+
+# Environment files
+.env
+.env.local
+
+# Logs
+logs/
+*.log
+
+# Uploaded files
+app/public/uploads/*
+!app/public/uploads/.gitkeep
+
+# LaTeX report (local build only)
+latex_report/
+*.jpg
