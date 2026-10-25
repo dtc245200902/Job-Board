@@ -1,0 +1,51 @@
+# ========================================================
+# Prometheus Configuration File
+# Student: dtc245200902 | Topic 33: Job Board Monitoring
+# ========================================================
+
+global:
+  scrape_interval: 10s
+  evaluation_interval: 10s
+  scrape_timeout: 5s
+
+scrape_configs:
+  # 1. Prometheus Self-Monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # 2. Job Board Web Application Metrics
+  - job_name: 'jobboard-webapp'
+    metrics_path: '/metrics'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['web:3000']
+        labels:
+          app: 'job-board-web'
+          env: 'production'
+
+  # 3. MySQL Database Exporter Metrics
+  - job_name: 'mysql-database'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['mysqld-exporter:9104']
+        labels:
+          app: 'mysql-8.0'
+          env: 'production'
+
+  # 4. Nginx Reverse Proxy Exporter Metrics
+  - job_name: 'nginx-proxy'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['nginx-exporter:9113']
+        labels:
+          app: 'nginx-reverse-proxy'
+          env: 'production'
+
+  # 5. Node Exporter / Host & System Metrics
+  - job_name: 'node-exporter'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['node-exporter:9100']
+        labels:
+          instance: 'host-system'

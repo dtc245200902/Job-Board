@@ -1,0 +1,167 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "id": 100,
+      "title": "Tổng quan Kinh doanh Tuyển dụng (Business KPIs)",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus-ds" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "blue", "value": null }]
+          }
+        }
+      },
+      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 1 },
+      "id": 1,
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "title": "Số lượng Việc làm Đang tuyển",
+      "type": "stat",
+      "targets": [{ "expr": "jobboard_active_jobs_total", "legendFormat": "Active Jobs" }]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus-ds" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "purple", "value": null }]
+          }
+        }
+      },
+      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 1 },
+      "id": 2,
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "title": "Tổng số Hồ sơ CV Đã nộp",
+      "type": "stat",
+      "targets": [{ "expr": "jobboard_applications_total", "legendFormat": "Total CVs" }]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus-ds" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 50 },
+              { "color": "red", "value": 200 }
+            ]
+          },
+          "unit": "reqps"
+        }
+      },
+      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 1 },
+      "id": 3,
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "title": "Tần suất Request (QPS)",
+      "type": "stat",
+      "targets": [{ "expr": "sum(rate(jobboard_http_requests_total[1m]))", "legendFormat": "Req/sec" }]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus-ds" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 0.5 },
+              { "color": "red", "value": 1.5 }
+            ]
+          },
+          "unit": "s"
+        }
+      },
+      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 1 },
+      "id": 4,
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "title": "Độ trễ trung bình (Avg Latency)",
+      "type": "stat",
+      "targets": [{ "expr": "sum(rate(jobboard_http_request_duration_seconds_sum[1m])) / sum(rate(jobboard_http_request_duration_seconds_count[1m]))", "legendFormat": "Latency" }]
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 6 },
+      "id": 101,
+      "title": "Hiệu năng Web Server & Nginx Reverse Proxy",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus-ds" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 7 },
+      "id": 5,
+      "title": "Lưu lượng HTTP Request theo Đường dẫn (Route Traffic)",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "sum by (route) (rate(jobboard_http_requests_total[1m]))", "legendFormat": "{{route}}" }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus-ds" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 7 },
+      "id": 6,
+      "title": "Phân bố Mã phản hồi HTTP (HTTP Status Distribution)",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "sum by (status_code) (rate(jobboard_http_requests_total[1m]))", "legendFormat": "HTTP {{status_code}}" }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus-ds" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 15 },
+      "id": 7,
+      "title": "Nginx Active Connections & Handled Requests",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "nginx_connections_active", "legendFormat": "Active Connections" },
+        { "expr": "rate(nginx_connections_handled_total[1m])", "legendFormat": "Handled Conn/s" }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus-ds" },
+      "fieldConfig": {
+        "defaults": { "unit": "bytes" }
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 15 },
+      "id": 8,
+      "title": "Bộ nhớ Node.js Process (RAM Usage)",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "jobboard_nodejs_heap_size_used_bytes", "legendFormat": "Heap Used" },
+        { "expr": "jobboard_nodejs_heap_size_total_bytes", "legendFormat": "Heap Total" },
+        { "expr": "jobboard_process_resident_memory_bytes", "legendFormat": "Resident Memory (RSS)" }
+      ]
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["jobboard", "web", "monitoring"],
+  "time": { "from": "now-15m", "to": "now" },
+  "timepicker": { "refresh_intervals": ["5s", "10s", "30s", "1m"] },
+  "timezone": "browser",
+  "title": "Job Board - Giám Sát Web & Hệ Thống Tuyển Dụng",
+  "uid": "jobboard-web-overview",
+  "version": 1
+}
